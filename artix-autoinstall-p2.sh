@@ -64,6 +64,7 @@ echo "EFI=${EFI}"
 echo "KERNEL=${KERNEL}"
 echo "MBR_BOOT_DEVICE=${MBR_BOOT_DEVICE}"
 echo "EFI_BOOT_PARTITION=${EFI_BOOT_PARTITION}"
+echo "MICROCODE=${MICROCODE}"
 echo "USER=${USER}"
 echo "HOSTNAME=${HOSTNAME}"
 echo "WIRELESS=${WIRELESS}"
@@ -157,7 +158,7 @@ echo "echo \"127.0.0.1 ${HOSTNAME}.localdomain ${HOSTNAME}\" > /etc/hosts"
 echo "127.0.0.1 ${HOSTNAME}.localdomain ${HOSTNAME}" > /etc/hosts
 
 echo "install network services"
-if [ WIRELESS == "YES" ]
+if [ ${WIRELESS} == "YES" ]
 then
     echo "pacman -S --noconfirm wpa_supplicant networkmanager-openrc"
     pacman -S --noconfirm wpa_supplicant networkmanager-openrc
