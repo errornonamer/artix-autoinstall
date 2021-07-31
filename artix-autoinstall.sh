@@ -47,7 +47,7 @@ while [[ $# -gt 0 ]]; do
             shift
             shift
             ;;
-        --mbr)
+        --efi)
             EFI="${2}"
             shift
             shift
@@ -97,14 +97,14 @@ echo "WIRELESS=${WIRELESS}"
 read -n1 -p "Press any key to continue."
 
 # installer 1
-exec artix-autoinstall-p1.sh -r ${ROOT_MOUNT} -k ${KERNEL} --luks-root ${ROOT_IS_LUKS} --nvme ${DRIVE_IS_NVME}
+bash artix-autoinstall-p1.sh -r ${ROOT_MOUNT} -k ${KERNEL} --luks-root ${ROOT_IS_LUKS} --nvme ${DRIVE_IS_NVME}
 
 # copy installer to chroot enviroment
 cp artix-autoinstall-p2.sh ${ROOT_MOUNT}
 chmod 755 ${ROOT_MOUNT}/artix-autoinstall-p2.sh
 
 # launch installer 2: electric boogaloo
-artic-chroot ${ROOT_MOUNT} artix-autoinstall-p2.sh --efi ${EFI} -k ${KERNEL} -b ${BOOT_PARTITION} --ucode ${MICROCODE} -u ${USER} -n ${HOSTNAME} -w ${WIRELESS}
+artix-chroot ${ROOT_MOUNT} bash artix-autoinstall-p2.sh --efi ${EFI} -k ${KERNEL} -b ${BOOT_PARTITION} --ucode ${MICROCODE} -u ${USER} -n ${HOSTNAME} -w ${WIRELESS}
 
 # delete copied installer
 rm ${ROOT_MOUNT}/artix-autoinstall-p2.sh

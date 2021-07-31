@@ -1,10 +1,4 @@
 #!/bin/bash
-# common function def
-pause(){
-    read -n1 -p "Press any key to continue."
-}
-
-
 # boot options
 EFI="YES"
 KERNEL="linux"
@@ -65,7 +59,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-echo "parsed arguments"
+echo "part 2 parsed arguments"
 echo "EFI=${EFI}"
 echo "KERNEL=${KERNEL}"
 echo "MBR_BOOT_DEVICE=${MBR_BOOT_DEVICE}"
@@ -73,6 +67,7 @@ echo "EFI_BOOT_PARTITION=${EFI_BOOT_PARTITION}"
 echo "USER=${USER}"
 echo "HOSTNAME=${HOSTNAME}"
 echo "WIRELESS=${WIRELESS}"
+read -n1 -p "Press any key to continue."
 
 
 # start install
@@ -104,7 +99,7 @@ if [ -n ${MICROCODE} ] then
     elif [ ${MICROCODE} = "amd" ] then
         echo "pacman -S --noconfirm amd-ucode"
         pacman -S --noconfirm amd-ucode
-    else then
+    else
         echo "unknown microcode, trying to download anyway.."
         echo "pacman -S --noconfirm ${MICROCODE}"
         pacman -S --noconfirm ${MICROCODE}
@@ -121,7 +116,7 @@ if [ $EFI == "YES" ] then
 
     echo "grub-install --target=x86_64-efi --efi-directory=${EFI_BOOT_PARTITION} --bootloader-id=grub"
     grub-install --target=x86_64-efi --efi-directory=${EFI_BOOT_PARTITION} --bootloader-id=grub
-else then
+else
     echo "grub-install --recheck ${MBR_BOOT_DEVICE}"
     grub-install --recheck ${MBR_BOOT_DEVICE}
 fi
@@ -160,7 +155,7 @@ if [ WIRELESS == "YES" ] then
     pacman -S --noconfirm wpa_supplicant networkmanager-openrc
     echo "rc-update add networkmanager"
     rc-update add NetworkManager
-else then
+else
     echo "pacman -S --noconfirm dhcpcd connman-openrc"
     pacman -S --noconfirm dhcpcd connman-openrc
     echo "rc-update add connmand"

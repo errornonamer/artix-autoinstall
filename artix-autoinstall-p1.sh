@@ -39,7 +39,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-echo "parsed arguments"
+echo "part 1 parsed arguments"
 echo "ROOT_MOUNT=${ROOT_MOUNT}"
 echo "KERNEL=${KERNEL}"
 echo "ROOT_IS_LUKS=${ROOT_IS_LUKS}"
