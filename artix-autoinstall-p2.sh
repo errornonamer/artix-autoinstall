@@ -124,13 +124,16 @@ then
 
     echo "grub-install --target=x86_64-efi --efi-directory=${EFI_BOOT_PARTITION} --bootloader-id=grub"
     grub-install --target=x86_64-efi --efi-directory=${EFI_BOOT_PARTITION} --bootloader-id=grub
+
+    echo "grub-mkconfig -o ${EFI_BOOT_PARTITION}/grub/grub.cfg"
+    grub-mkconfig -o ${EFI_BOOT_PARTITION}/grub/grub.cfg
 else
     echo "grub-install --recheck ${MBR_BOOT_DEVICE}"
     grub-install --recheck ${MBR_BOOT_DEVICE}
-fi
 
-echo "grub-mkconfig -o /boot/grub/grub.cfg"
-grub-mkconfig -o /boot/grub/grub.cfg
+    echo "grub-mkconfig -o ${MBR_BOOT_DEVICE}/grub/grub.cfg"
+    grub-mkconfig -o ${MBR_BOOT_DEVICE}/grub/grub.cfg
+fi
 
 echo "set root password"
 echo "passwd"
