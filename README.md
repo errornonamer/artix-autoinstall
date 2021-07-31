@@ -6,19 +6,9 @@ uses OpenRC init and GRUB bootloader
 
 ## how to use
 
-### simple way
-
 first, boot into live enviroment with artix image and get root\
 partition the drives and mount them\
-clone this repo and run `artis-autoinstall.sh` with correct argument\
-reboot and configure the system however you like
-
-### dumb way
-
-first, boot into live enviroment with artix image and get root\
-partition the drives and mount them\
-run `artix-autoinstall-p1.sh` with correct argument\
-chroot into your root partition, run `artix-autoinstall-p2.sh` with correct argument\
+clone this repo and run `bash artis-autoinstall.sh` with correct argument\
 reboot and configure the system however you like
 
 ## arguments
@@ -38,6 +28,8 @@ artix-autoinstall-p2.sh
     -n|--hostname       : hostname of the machine, default=artix-linux
     -w|--wireless       : install wpa_supplicant and use networkmanager instead of dhcpcd and connman, default=NO
 ```
+
+`artix-autoinstall.sh` accepts all arguments listed above.
 
 ## todo
 
