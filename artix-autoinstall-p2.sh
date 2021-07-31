@@ -96,7 +96,7 @@ if [ -n ${MICROCODE} ] then
     if [ ${MICROCODE} = "intel" ] then
         echo "pacman -S --noconfirm intel-ucode"
         pacman -S --noconfirm intel-ucode
-    #elif [ ${MICROCODE} = "amd" ] then
+        #elif [ ${MICROCODE} = "amd" ] then
     else
         if [ ${MICROCODE} = "amd" ] then
             echo "pacman -S --noconfirm amd-ucode"
