@@ -96,13 +96,16 @@ if [ -n ${MICROCODE} ] then
     if [ ${MICROCODE} = "intel" ] then
         echo "pacman -S --noconfirm intel-ucode"
         pacman -S --noconfirm intel-ucode
-    elif [ ${MICROCODE} = "amd" ] then
-        echo "pacman -S --noconfirm amd-ucode"
-        pacman -S --noconfirm amd-ucode
+    #elif [ ${MICROCODE} = "amd" ] then
     else
-        echo "unknown microcode, trying to download anyway.."
-        echo "pacman -S --noconfirm ${MICROCODE}"
-        pacman -S --noconfirm ${MICROCODE}
+        if [ ${MICROCODE} = "amd" ] then
+            echo "pacman -S --noconfirm amd-ucode"
+            pacman -S --noconfirm amd-ucode
+        else
+            echo "unknown microcode, trying to download anyway.."
+            echo "pacman -S --noconfirm ${MICROCODE}"
+            pacman -S --noconfirm ${MICROCODE}
+        fi
     fi
 fi
 
