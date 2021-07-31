@@ -65,7 +65,8 @@ fstabgen -L -p ${ROOT_MOUNT} > ${ROOT_MOUNT}/etc/fstab
 #if [ $ROOT_IS_LUKS = "YES" ] then
 #fi
 
-if [ $DRIVE_IS_NVME = "YES" ] then
+if [ $DRIVE_IS_NVME = "YES" ]
+then
     echo "sed -i \"s/MODULES=()/MODULES=(nvme)/g\" ${ROOT_MOUNT}/etc/mkinitcpio.conf"
     sed -i "s/MODULES=()/MODULES=(nvme)/g" ${ROOT_MOUNT}/etc/mkinitcpio.conf
 fi

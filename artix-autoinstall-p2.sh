@@ -91,14 +91,17 @@ echo "generate locale.conf"
 echo "locale-gen"
 locale-gen
 
-if [ -n ${MICROCODE} ] then
+if [ -n ${MICROCODE} ]
+then
     echo "install microcode"
-    if [ ${MICROCODE} = "intel" ] then
+    if [ ${MICROCODE} = "intel" ]
+    then
         echo "pacman -S --noconfirm intel-ucode"
         pacman -S --noconfirm intel-ucode
         #elif [ ${MICROCODE} = "amd" ] then
     else
-        if [ ${MICROCODE} = "amd" ] then
+        if [ ${MICROCODE} = "amd" ]
+        then
             echo "pacman -S --noconfirm amd-ucode"
             pacman -S --noconfirm amd-ucode
         else
@@ -113,7 +116,8 @@ echo "install bootloader"
 echo "pacman -S --noconfirm grub os-prober"
 pacman -S --noconfirm grub os-prober
 
-if [ $EFI == "YES" ] then
+if [ $EFI == "YES" ]
+then
     echo "pacman -S --noconfirm efibootmgr"
     pacman -S --noconfirm efibootmgr
 
@@ -153,7 +157,8 @@ echo "echo \"127.0.0.1 ${HOSTNAME}.localdomain ${HOSTNAME}\" > /etc/hosts"
 echo "127.0.0.1 ${HOSTNAME}.localdomain ${HOSTNAME}" > /etc/hosts
 
 echo "install network services"
-if [ WIRELESS == "YES" ] then
+if [ WIRELESS == "YES" ]
+then
     echo "pacman -S --noconfirm wpa_supplicant networkmanager-openrc"
     pacman -S --noconfirm wpa_supplicant networkmanager-openrc
     echo "rc-update add networkmanager"
