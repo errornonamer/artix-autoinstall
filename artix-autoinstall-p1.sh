@@ -47,13 +47,9 @@ echo "DRIVE_IS_NVME=${DRIVE_IS_NVME}"
 read -n1 -p "Press any key to continue."
 
 # start install
-echo "install base system"
-echo "basestrap ${ROOT_MOUNT} base base-devel openrc elogind-openrc"
-basestrap ${ROOT_MOUNT} base base-devel openrc elogind-openrc
-
-echo "install kernel"
-echo "basestrap ${ROOT_MOUNT} ${KERNEL} linux-firmware"
-basestrap ${ROOT_MOUNT} ${KERNEL} linux-firmware
+echo "install base system and kernel"
+echo "basestrap ${ROOT_MOUNT} base base-devel openrc elogind-openrc ${KERNEL} linux-firmware"
+basestrap ${ROOT_MOUNT} base base-devel openrc elogind-openrc ${KERNEL} linux-firmware
 
 echo "generate fstab"
 echo "fstabgen -L -p ${ROOT_MOUNT} > ${ROOT_MOUNT}/etc/fstab"
