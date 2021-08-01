@@ -20,7 +20,7 @@ artix-autoinstall-p1.sh
     --luks-root         : root partition is encrypted with luks, default=NO
     --nvme              : installing to nvme drive, default=NO
 artix-autoinstall-p2.sh
-    --efi               : use bios-mbr boot, default=YES
+    --efi               : use efi/gpt boot, default=YES
     -k|--kernel         : installed kernel, default=linux
     -b|--boot           : boot partition mount location, default=/dev/sda(mbr)|/boot(gpt)
     --ucode|--microcode : install microcode, accepted=intel|amd|"", default=""
