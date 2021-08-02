@@ -2,9 +2,9 @@
 # install options
 AUTOMOUNT="NO"
 ROOT="/mnt"
-BOOT=""
-HOME=""
-SWAP=""
+BOOT="none"
+HOME="none"
+SWAP="none"
 KERNEL="linux"
 
 # drive options
@@ -84,19 +84,19 @@ then
     echo "mkdir /mnt/home"
     mkdir /mnt/home
 
-    if [ -n $BOOT ]
+    if [ $BOOT != "none" ]
     then
         echo "mount ${BOOT} /mnt/boot"
         mount ${BOOT} /mnt/boot
     fi
 
-    if [ -n $HOME ]
+    if [ $HOME != "none" ]
     then
         echo "mount ${HOME} /mnt/home"
         mount ${HOME} /mnt/home
     fi
 
-    if [ -n $SWAP ]
+    if [ $SWAP != "none" ]
     then
         echo "swapon ${SWAP}"
         swapon ${SWAP}

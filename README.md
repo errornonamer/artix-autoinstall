@@ -17,9 +17,9 @@ reboot and configure the system however you like
 artix-autoinstall-p1.sh
     -a|--automount      : mount partitions automatically, default=NO
     -r|--root           : mounting point of root partition / dev path of root partition, default=/mnt
-    -b|--boot           : boot partition, default=""
-    -h|--home           : home partition, default=""
-    -s|--swap           : swap partition, default=""
+    -b|--boot           : boot partition, default=none
+    -h|--home           : home partition, default=none
+    -s|--swap           : swap partition, default=none
     -k|--kernel         : kernel to install, default=linux
     --luks-root         : root partition is encrypted with luks, default=NO
     --nvme              : installing to nvme drive, default=NO

@@ -4,9 +4,9 @@
 # install options
 AUTOMOUNT="NO"
 ROOT="/mnt"
-BOOT=""
-HOME=""
-SWAP=""
+BOOT="none"
+HOME="none"
+SWAP="none"
 KERNEL="linux"
 
 # drive options
@@ -43,6 +43,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         -b|--boot)
             BOOT="$2"
+            BOOT_PARTITION="${2}"
             shift
             shift
             ;;
@@ -73,11 +74,6 @@ while [[ $# -gt 0 ]]; do
             ;;
         --efi)
             EFI="${2}"
-            shift
-            shift
-            ;;
-        -b|--boot)
-            BOOT_PARTITION="${2}"
             shift
             shift
             ;;
@@ -125,11 +121,12 @@ echo "WIRELESS=${WIRELESS}"
 read -n1 -p "Press any key to continue."
 
 # installer 1
-bash artix-autoinstall-p1.sh -r ${ROOT} -k ${KERNEL} --luks-root ${ROOT_IS_LUKS} --nvme ${DRIVE_IS_NVME}
+bash artix-autoinstall-p1.sh -a ${AUTOMOUNT} -r ${ROOT} -b ${BOOT} -h ${HOME} -s ${SWAP} -k ${KERNEL} --luks-root ${ROOT_IS_LUKS} --nvme ${DRIVE_IS_NVME}
 
 if [ $AUTOMOUNT = "YES" ]
 then
     ROOT="/mnt"
+    BOOT_PARTITION="/boot"
 fi
 
 # copy installer to chroot enviroment
