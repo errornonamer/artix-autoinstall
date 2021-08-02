@@ -1,6 +1,10 @@
 #!/bin/bash
 # install options
-ROOT_MOUNT="/mnt"
+AUTOMOUNT="NO"
+ROOT="/mnt"
+BOOT=""
+HOME=""
+SWAP=""
 KERNEL="linux"
 
 # drive options
@@ -13,8 +17,28 @@ while [[ $# -gt 0 ]]; do
     key="$1"
 
     case $key in
+        -a|--automount)
+            AUTOMOUNT="$2"
+            shift
+            shift
+            ;;
         -r|--root)
-            ROOT_MOUNT="$2"
+            ROOT="$2"
+            shift
+            shift
+            ;;
+        -b|--boot)
+            BOOT="$2"
+            shift
+            shift
+            ;;
+        -h|--home)
+            HOME="$2"
+            shift
+            shift
+            ;;
+        -s|--swap)
+            SWAP="$2"
             shift
             shift
             ;;
@@ -40,20 +64,55 @@ while [[ $# -gt 0 ]]; do
 done
 
 echo "part 1 parsed arguments"
-echo "ROOT_MOUNT=${ROOT_MOUNT}"
+echo "AUTOMOUNT=${AUTOMOUNT}"
+echo "ROOT=${ROOT}"
+echo "BOOT=${BOOT}"
+echo "HOME=${HOME}"
+echo "SWAP=${SWAP}"
 echo "KERNEL=${KERNEL}"
 echo "ROOT_IS_LUKS=${ROOT_IS_LUKS}"
 echo "DRIVE_IS_NVME=${DRIVE_IS_NVME}"
 read -n1 -p "Press any key to continue."
 
+if [ $AUTOMOUNT = "YES" ]
+then
+    echo "mounting pattitions"
+    echo "mount ${ROOT} /mnt"
+    mount ${ROOT} /mnt
+    echo "mkdir /mnt/boot"
+    mkdir /mnt/boot
+    echo "mkdir /mnt/home"
+    mkdir /mnt/home
+
+    if [ -n $BOOT ]
+    then
+        echo "mount ${BOOT} /mnt/boot"
+        mount ${BOOT} /mnt/boot
+    fi
+
+    if [ -n $HOME ]
+    then
+        echo "mount ${HOME} /mnt/home"
+        mount ${HOME} /mnt/home
+    fi
+
+    if [ -n $SWAP ]
+    then
+        echo "swapon ${SWAP}"
+        swapon ${SWAP}
+    fi
+
+    ROOT="/mnt"
+fi
+
 # start install
 echo "install base system and kernel"
-echo "basestrap ${ROOT_MOUNT} base base-devel openrc elogind-openrc ${KERNEL} linux-firmware"
-basestrap ${ROOT_MOUNT} base base-devel openrc elogind-openrc ${KERNEL} linux-firmware
+echo "basestrap ${ROOT} base base-devel openrc elogind-openrc ${KERNEL} linux-firmware"
+basestrap ${ROOT} base base-devel openrc elogind-openrc ${KERNEL} linux-firmware
 
 echo "generate fstab"
-echo "fstabgen -L -p ${ROOT_MOUNT} > ${ROOT_MOUNT}/etc/fstab"
-fstabgen -L -p ${ROOT_MOUNT} > ${ROOT_MOUNT}/etc/fstab
+echo "fstabgen -L -p ${ROOT} > ${ROOT}/etc/fstab"
+fstabgen -L -p ${ROOT} > ${ROOT}/etc/fstab
 
 # {2} = drivepath
 # {1} = label
@@ -63,10 +122,10 @@ fstabgen -L -p ${ROOT_MOUNT} > ${ROOT_MOUNT}/etc/fstab
 
 if [ $DRIVE_IS_NVME = "YES" ]
 then
-    echo "sed -i \"s/MODULES=()/MODULES=(nvme)/g\" ${ROOT_MOUNT}/etc/mkinitcpio.conf"
-    sed -i "s/MODULES=()/MODULES=(nvme)/g" ${ROOT_MOUNT}/etc/mkinitcpio.conf
+    echo "sed -i \"s/MODULES=()/MODULES=(nvme)/g\" ${ROOT}/etc/mkinitcpio.conf"
+    sed -i "s/MODULES=()/MODULES=(nvme)/g" ${ROOT}/etc/mkinitcpio.conf
 fi
 
 echo "base system installation complete."
 echo "chroot into root and run artix-autoinstall-p2"
-echo "artix-chroot ${ROOT_MOUNT}"
+echo "artix-chroot ${ROOT}"

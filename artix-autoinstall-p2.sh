@@ -92,16 +92,16 @@ echo "generate locale.conf"
 echo "locale-gen"
 locale-gen
 
-if [ -n ${MICROCODE} ]
+if [ -n $MICROCODE ]
 then
     echo "install microcode"
-    if [ ${MICROCODE} = "intel" ]
+    if [ $MICROCODE = "intel" ]
     then
         echo "pacman -S --noconfirm intel-ucode"
         pacman -S --noconfirm intel-ucode
         #elif [ ${MICROCODE} = "amd" ] then
     else
-        if [ ${MICROCODE} = "amd" ]
+        if [ $MICROCODE = "amd" ]
         then
             echo "pacman -S --noconfirm amd-ucode"
             pacman -S --noconfirm amd-ucode

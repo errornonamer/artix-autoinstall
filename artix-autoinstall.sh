@@ -2,7 +2,11 @@
 
 # p1 options
 # install options
-ROOT_MOUNT="/mnt"
+AUTOMOUNT="NO"
+ROOT="/mnt"
+BOOT=""
+HOME=""
+SWAP=""
 KERNEL="linux"
 
 # drive options
@@ -27,8 +31,28 @@ while [[ $# -gt 0 ]]; do
     key="$1"
 
     case $key in
+        -a|--automount)
+            AUTOMOUNT="$2"
+            shift
+            shift
+            ;;
         -r|--root)
-            ROOT_MOUNT="$2"
+            ROOT="$2"
+            shift
+            shift
+            ;;
+        -b|--boot)
+            BOOT="$2"
+            shift
+            shift
+            ;;
+        -h|--home)
+            HOME="$2"
+            shift
+            shift
+            ;;
+        -s|--swap)
+            SWAP="$2"
             shift
             shift
             ;;
@@ -84,7 +108,11 @@ while [[ $# -gt 0 ]]; do
 done
 
 echo "parsed arguments"
-echo "ROOT_MOUNT=${ROOT_MOUNT}"
+echo "AUTOMOUNT=${AUTOMOUNT}"
+echo "ROOT=${ROOT}"
+echo "BOOT=${BOOT}"
+echo "HOME=${HOME}"
+echo "SWAP=${SWAP}"
 echo "KERNEL=${KERNEL}"
 echo "ROOT_IS_LUKS=${ROOT_IS_LUKS}"
 echo "DRIVE_IS_NVME=${DRIVE_IS_NVME}"
@@ -97,14 +125,19 @@ echo "WIRELESS=${WIRELESS}"
 read -n1 -p "Press any key to continue."
 
 # installer 1
-bash artix-autoinstall-p1.sh -r ${ROOT_MOUNT} -k ${KERNEL} --luks-root ${ROOT_IS_LUKS} --nvme ${DRIVE_IS_NVME}
+bash artix-autoinstall-p1.sh -r ${ROOT} -k ${KERNEL} --luks-root ${ROOT_IS_LUKS} --nvme ${DRIVE_IS_NVME}
+
+if [ $AUTOMOUNT = "YES" ]
+then
+    ROOT="/mnt"
+fi
 
 # copy installer to chroot enviroment
-cp artix-autoinstall-p2.sh ${ROOT_MOUNT}
-chmod 755 ${ROOT_MOUNT}/artix-autoinstall-p2.sh
+cp artix-autoinstall-p2.sh ${ROOT}
+chmod 755 ${ROOT}/artix-autoinstall-p2.sh
 
 # launch installer 2: electric boogaloo
-artix-chroot ${ROOT_MOUNT} bash artix-autoinstall-p2.sh --efi ${EFI} -k ${KERNEL} -b ${BOOT_PARTITION} --ucode ${MICROCODE} -u ${USER} -n ${HOSTNAME} -w ${WIRELESS}
+artix-chroot ${ROOT} bash artix-autoinstall-p2.sh --efi ${EFI} -k ${KERNEL} -b ${BOOT_PARTITION} --ucode ${MICROCODE} -u ${USER} -n ${HOSTNAME} -w ${WIRELESS}
 
 # delete copied installer
-rm ${ROOT_MOUNT}/artix-autoinstall-p2.sh
+rm ${ROOT}/artix-autoinstall-p2.sh

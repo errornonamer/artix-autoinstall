@@ -1,7 +1,7 @@
 # errors-artix-autoinstall
 
 artix linux autoinstall script for personal use\
-does not partition drives nor mount them automatically, has to be done manually before running\
+does not partition drives automatically, has to be done manually before running\
 uses OpenRC init and GRUB bootloader
 
 ## how to use
@@ -15,7 +15,11 @@ reboot and configure the system however you like
 
 ```
 artix-autoinstall-p1.sh
-    -r|--root           : mounting point of root partition, default=/mnt
+    -a|--automount      : mount partitions automatically, default=NO
+    -r|--root           : mounting point of root partition / dev path of root partition, default=/mnt
+    -b|--boot           : boot partition, default=""
+    -h|--home           : home partition, default=""
+    -s|--swap           : swap partition, default=""
     -k|--kernel         : kernel to install, default=linux
     --luks-root         : root partition is encrypted with luks, default=NO
     --nvme              : installing to nvme drive, default=NO
