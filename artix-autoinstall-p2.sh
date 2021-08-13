@@ -149,8 +149,8 @@ then
     echo "sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\\\"cryptdevice=${LUKS_ROOT}:root\\\" /etc/default/grub"
 	sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${LUKS_ROOT}:root\" /etc/default/grub
 
-    echo 'echo "GRUB_ENABLE_CRYPTODISK=y" > /etc/default/grub'
-    echo "GRUB_ENABLE_CRYPTODISK=y" > /etc/default/grub
+    echo 'echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub'
+    echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
 fi
 
 if [ $EFI == "YES" ]
