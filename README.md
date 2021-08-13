@@ -8,7 +8,7 @@ uses OpenRC init and GRUB bootloader
 
 first, boot into live enviroment with artix image and get root\
 partition the drives and mount them\
-clone this repo and run `bash artis-autoinstall.sh` with correct argument\
+clone this repo and run `bash artix-autoinstall.sh` with correct argument\
 reboot and configure the system however you like
 
 ## arguments
@@ -25,6 +25,9 @@ artix-autoinstall-p1.sh
     --nvme              : installing to nvme drive, default=NO
 artix-autoinstall-p2.sh
     --efi               : use efi/gpt boot, default=YES
+    --secure            : implement secure boot with preloader, default=NO
+    --efidrive          : source of mounted boot partition used for secure boot, default=/dev/sda
+    --efipartnum        : partition number of efi partition, default=""
     -k|--kernel         : installed kernel, default=linux
     -b|--boot           : boot partition mount location, default=/dev/sda(mbr)|/boot(gpt)
     --ucode|--microcode : install microcode, accepted=intel|amd|"", default=""

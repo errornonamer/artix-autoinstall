@@ -17,6 +17,7 @@ DRIVE_IS_NVME="NO"
 # p2 options
 # boot options
 EFI="YES"
+SECURE="NO"
 BOOT_PARTITION="/boot"
 MICROCODE=""
 
@@ -74,6 +75,11 @@ while [[ $# -gt 0 ]]; do
             ;;
         --efi)
             EFI="${2}"
+            shift
+            shift
+            ;;
+        --secure)
+            SECURE="${2}"
             shift
             shift
             ;;

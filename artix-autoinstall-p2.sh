@@ -1,6 +1,9 @@
 #!/bin/bash
 # boot options
 EFI="YES"
+SECURE="NO"
+EFI_DRIVE="/dev/sda"
+EFI_PART_NUM=""
 KERNEL="linux"
 MBR_BOOT_DEVICE="/dev/sda"
 EFI_BOOT_PARTITION="/boot"
@@ -19,6 +22,21 @@ while [[ $# -gt 0 ]]; do
     case $key in
         --efi)
             EFI="${2}"
+            shift
+            shift
+            ;;
+        --secure)
+            SECURE="${2}"
+            shift
+            shift
+            ;;
+        --efidrive)
+            EFI_DRIVE="${2}"
+            shift
+            shift
+            ;;
+        --efipartnum)
+            EFI_PART_NUM="${2}"
             shift
             shift
             ;;
@@ -127,6 +145,43 @@ then
 
     echo "grub-mkconfig -o ${EFI_BOOT_PARTITION}/grub/grub.cfg"
     grub-mkconfig -o ${EFI_BOOT_PARTITION}/grub/grub.cfg
+
+    if [ $SECURE == "YES" ]
+    then
+        echo "build standalone grub image for secure boot"
+        echo "echo 'configfile \${cmdpath}/grub.cfg' > /tmp/grub.cfg"
+        echo 'configfile ${cmdpath}/grub.cfg' > /tmp/grub.cfg
+
+        echo "grub-mkstandalone -O x86_64-efi --modules=\"part_gpt part_msdos\" --disable-shim-lock \
+                                              --locales=\"en@quot\" -o \"${EFI_BOOT_PARTITION}/EFI/grub/loader.efi\" \"boot/grub/grub.cfg=/tmp/grub.cfg\" -v"
+        grub-mkstandalone -O x86_64-efi --modules="part_gpt part_msdos" --disable-shim-lock \
+                                        --locales="en@quot" -o "${EFI_BOOT_PARTITION}/EFI/grub/loader.efi" "boot/grub/grub.cfg=/tmp/grub.cfg" -v
+
+        echo "install and setup preloader"
+        echo "pacman -S --noconfirm git"
+        pacman -S --noconfirm git
+
+        echo "cd /temp"
+        cd /temp
+
+        echo "git clone https://aur.archlinux.org/preloader-signed.git"
+        git clone https://aur.archlinux.org/preloader-signed.git
+
+        echo "cd preloader-signed"
+        cd predloader-signed
+
+        echo "makepkg -sri"
+        makepkg -sri
+
+        echo "cp /usr/share/preloader-signed/{PreLoader,HashTool}.efi ${EFI_BOOT_PARTITION}/EFI/grub"
+        cp /usr/share/preloader-signed/{PreLoader,HashTool}.efi ${EFI_BOOT_PARTITION}/EFI/grub
+
+        echo "create NVRAM entry for preloader and hashtool"
+        echo "efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label \"PreLoader\" --loader /EFI/grub/PreLoader.efi"
+        efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label "PreLoader" --loader /EFI/grub/PreLoader.efi
+        echo "efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label \"HashTool\" --loader /EFI/grub/HashTool.efi"
+        efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label "HashTool" --loader /EFI/grub/HashTool.efi
+    fi
 else
     echo "grub-install --recheck ${MBR_BOOT_DEVICE}"
     grub-install --recheck ${MBR_BOOT_DEVICE}
