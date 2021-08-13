@@ -125,8 +125,17 @@ fi
 
 if [ $LUKS_ROOT != "NO" ]
 then
-    echo "sed -i \"s/block filesystems/block encrypt filesystems/g\" ${ROOT}/etc/mkinitcpio.conf"
-	sed -i "s/block filesystems/block encrypt filesystems/g" ${ROOT}/etc/mkinitcpio.conf
+    echo "sed -i \"s/block filesystems/block keymap encrypt lvm2 filesystems/g\" ${ROOT}/etc/mkinitcpio.conf"
+	sed -i "s/block filesystems/block keymap encrypt lvm2 filesystems/g" ${ROOT}/etc/mkinitcpio.conf
+
+    echo "dd bs=512 count=4 if=/dev/urandom of=/crypto_keyfile.bin"
+    dd bs=512 count=4 if=/dev/urandom of=/crypto_keyfile.bin
+
+    echo "cryptsetup luksAddKey ${LUKS_ROOT} /crypto_keyfile.bin"
+    cryptsetup luksAddKey ${LUKS_ROOT} /crypto_keyfile.bin
+    
+    echo "chmod 000 /crypto_keyfile.bin"
+    chmod 000 /crypto_keyfile.bin
 fi
 
 echo "base system installation complete."
