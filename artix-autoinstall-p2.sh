@@ -100,6 +100,13 @@ read -n1 -p "Press any key to continue."
 
 
 # start install
+
+if [ $LUKS_ROOT != "NO" ]
+then
+    echo "pacman -S --noconfirm cryptsetup lvm2"
+    pacman -S --noconfirm cryptsetup lvm2
+fi
+
 echo "create initial ramdisk environment"
 echo "mkinitcpio -p ${KERNEL}"
 mkinitcpio -p ${KERNEL}
