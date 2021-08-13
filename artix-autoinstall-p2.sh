@@ -152,17 +152,20 @@ then
         echo "echo 'configfile \${cmdpath}/grub.cfg' > /tmp/grub.cfg"
         echo 'configfile ${cmdpath}/grub.cfg' > /tmp/grub.cfg
 
-        echo "grub-mkstandalone -O x86_64-efi --modules=\"part_gpt part_msdos\" --disable-shim-lock \
+        echo "grub-mkstandalone -O x86_64-efi --modules=\"part_gpt part_msdos tpm\" --disable-shim-lock \
                                               --locales=\"en@quot\" -o \"${EFI_BOOT_PARTITION}/EFI/grub/loader.efi\" \"boot/grub/grub.cfg=/tmp/grub.cfg\" -v"
-        grub-mkstandalone -O x86_64-efi --modules="part_gpt part_msdos" --disable-shim-lock \
+        grub-mkstandalone -O x86_64-efi --modules="part_gpt part_msdos tpm" --disable-shim-lock \
                                         --locales="en@quot" -o "${EFI_BOOT_PARTITION}/EFI/grub/loader.efi" "boot/grub/grub.cfg=/tmp/grub.cfg" -v
+
+        echo "cp ${EFI_BOOT_PARTITION}/grub/grub.cfg ${EFI_BOOT_PARTITION}/EFI/grub/grub.cfg"
+        cp ${EFI_BOOT_PARTITION}/grub/grub.cfg ${EFI_BOOT_PARTITION}/EFI/grub/grub.cfg
 
         echo "install and setup preloader"
         echo "pacman -S --noconfirm git"
         pacman -S --noconfirm git
 
-        echo "cd /temp"
-        cd /temp
+        echo "cd /tmp"
+        cd /tmp
 
         echo "git clone https://aur.archlinux.org/preloader-signed.git"
         git clone https://aur.archlinux.org/preloader-signed.git
