@@ -7,7 +7,7 @@ EFI_PART_NUM=""
 KERNEL="linux"
 MBR_BOOT_DEVICE="/dev/sda"
 EFI_BOOT_PARTITION="/boot"
-MICROCODE=""
+MICROCODE="none"
 LUKS_ROOT="NO"
 
 # configuration options
@@ -120,14 +120,13 @@ echo "generate locale.conf"
 echo "locale-gen"
 locale-gen
 
-if [ -n $MICROCODE ]
+if [ $MICROCODE != "none" ]
 then
     echo "install microcode"
     if [ $MICROCODE = "intel" ]
     then
         echo "pacman -S --noconfirm intel-ucode"
         pacman -S --noconfirm intel-ucode
-        #elif [ ${MICROCODE} = "amd" ] then
     else
         if [ $MICROCODE = "amd" ]
         then

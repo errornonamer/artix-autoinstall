@@ -19,9 +19,9 @@ DRIVE_IS_NVME="NO"
 EFI="YES"
 SECURE="NO"
 EFI_DRIVE="/dev/sda"
-EFI_PART_NUM=""
+EFI_PART_NUM="none"
 BOOT_PARTITION="/boot"
-MICROCODE=""
+MICROCODE="none"
 
 # configuration options
 USER="user"
@@ -152,8 +152,7 @@ cp artix-autoinstall-p2.sh ${ROOT}
 chmod 755 ${ROOT}/artix-autoinstall-p2.sh
 
 # launch installer 2: electric boogaloo
-artix-chroot ${ROOT} bash artix-autoinstall-p2.sh --efi ${EFI} --secure ${SECURE} --efidrive ${EFI_DRIVE} --efipartnum ${EFI_PART_NUM}\
-                                                  -k ${KERNEL} -b ${BOOT_PARTITION} --ucode ${MICROCODE} --luks-root ${LUKS_ROOT} -u ${USER} -n ${HOSTNAME} -w ${WIRELESS}
+artix-chroot ${ROOT} bash artix-autoinstall-p2.sh --efi ${EFI} --secure ${SECURE} --efidrive ${EFI_DRIVE} --efipartnum ${EFI_PART_NUM} -k ${KERNEL} -b ${BOOT_PARTITION} --ucode ${MICROCODE} --luks-root ${LUKS_ROOT} -u ${USER} -n ${HOSTNAME} -w ${WIRELESS}
 
 # delete copied installer
 rm ${ROOT}/artix-autoinstall-p2.sh
