@@ -21,7 +21,7 @@ artix-autoinstall-p1.sh
     -h|--home           : home partition, default=none
     -s|--swap           : swap partition, default=none
     -k|--kernel         : kernel to install, default=linux
-    --luks-root         : root partition is encrypted with luks, default=NO
+    --luks-root         : uuid of the root drive (if it is encrypted with luks), default=NO
     --nvme              : installing to nvme drive, default=NO
 artix-autoinstall-p2.sh
     --efi               : use efi/gpt boot, default=YES
@@ -31,6 +31,7 @@ artix-autoinstall-p2.sh
     -k|--kernel         : installed kernel, default=linux
     -b|--boot           : boot partition mount location, default=/dev/sda(mbr)|/boot(gpt)
     --ucode|--microcode : install microcode, accepted=intel|amd|"", default=""
+    --luks-root         : uuid of the root drive (if it is encrypted with luks), default=NO
     -u|--user           : name of a user to be added, default=user
     -n|--hostname       : hostname of the machine, default=artix-linux
     -w|--wireless       : install wpa_supplicant and use networkmanager instead of dhcpcd and connman, default=NO
@@ -40,5 +41,4 @@ artix-autoinstall-p2.sh
 
 ## todo
 
- * autodetection of nvme drives
- * luks encrypted drive support
+ * secrue boot with shim

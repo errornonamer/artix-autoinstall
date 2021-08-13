@@ -10,7 +10,7 @@ SWAP="none"
 KERNEL="linux"
 
 # drive options
-ROOT_IS_LUKS="NO"
+LUKS_ROOT="NO"
 DRIVE_IS_NVME="NO"
 
 
@@ -18,6 +18,8 @@ DRIVE_IS_NVME="NO"
 # boot options
 EFI="YES"
 SECURE="NO"
+EFI_DRIVE="/dev/sda"
+EFI_PART_NUM=""
 BOOT_PARTITION="/boot"
 MICROCODE=""
 
@@ -64,7 +66,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --luks-root)
-            #ROOT_IS_LUKS="$2"
+            LUKS_ROOT="$2"
             shift
             shift
             ;;
@@ -80,6 +82,16 @@ while [[ $# -gt 0 ]]; do
             ;;
         --secure)
             SECURE="${2}"
+            shift
+            shift
+            ;;
+        --efidrive)
+            EFI_DRIVE="${2}"
+            shift
+            shift
+            ;;
+        --efipartnum)
+            EFI_PART_NUM="${2}"
             shift
             shift
             ;;
@@ -116,7 +128,7 @@ echo "BOOT=${BOOT}"
 echo "HOME=${HOME}"
 echo "SWAP=${SWAP}"
 echo "KERNEL=${KERNEL}"
-echo "ROOT_IS_LUKS=${ROOT_IS_LUKS}"
+echo "LUKS_ROOT=${LUKS_ROOT}"
 echo "DRIVE_IS_NVME=${DRIVE_IS_NVME}"
 echo "EFI=${EFI}"
 echo "BOOT_PARTITION=${BOOT_PARTITION}"
@@ -127,7 +139,7 @@ echo "WIRELESS=${WIRELESS}"
 read -n1 -p "Press any key to continue."
 
 # installer 1
-bash artix-autoinstall-p1.sh -a ${AUTOMOUNT} -r ${ROOT} -b ${BOOT} -h ${HOME} -s ${SWAP} -k ${KERNEL} --luks-root ${ROOT_IS_LUKS} --nvme ${DRIVE_IS_NVME}
+bash artix-autoinstall-p1.sh -a ${AUTOMOUNT} -r ${ROOT} -b ${BOOT} -h ${HOME} -s ${SWAP} -k ${KERNEL} --luks-root ${LUKS_ROOT} --nvme ${DRIVE_IS_NVME}
 
 if [ $AUTOMOUNT = "YES" ]
 then
@@ -140,7 +152,8 @@ cp artix-autoinstall-p2.sh ${ROOT}
 chmod 755 ${ROOT}/artix-autoinstall-p2.sh
 
 # launch installer 2: electric boogaloo
-artix-chroot ${ROOT} bash artix-autoinstall-p2.sh --efi ${EFI} -k ${KERNEL} -b ${BOOT_PARTITION} --ucode ${MICROCODE} -u ${USER} -n ${HOSTNAME} -w ${WIRELESS}
+artix-chroot ${ROOT} bash artix-autoinstall-p2.sh --efi ${EFI} --secure ${SECURE} --efidrive ${EFI_DRIVE} --efipartnum ${EFI_PART_NUM}\
+                                                  -k ${KERNEL} -b ${BOOT_PARTITION} --ucode ${MICROCODE} --luks-root ${LUKS_ROOT} -u ${USER} -n ${HOSTNAME} -w ${WIRELESS}
 
 # delete copied installer
 rm ${ROOT}/artix-autoinstall-p2.sh

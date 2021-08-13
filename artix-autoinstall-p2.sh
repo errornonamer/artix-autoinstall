@@ -8,6 +8,7 @@ KERNEL="linux"
 MBR_BOOT_DEVICE="/dev/sda"
 EFI_BOOT_PARTITION="/boot"
 MICROCODE=""
+LUKS_ROOT="NO"
 
 # configuration options
 USER="user"
@@ -56,6 +57,11 @@ while [[ $# -gt 0 ]]; do
             shift
             shift
             ;;
+        --luks-root)
+            LUKS_ROOT="$2"
+            shift
+            shift
+            ;;
         -u|--user)
             USER="${2}"
             shift
@@ -79,10 +85,14 @@ done
 
 echo "part 2 parsed arguments"
 echo "EFI=${EFI}"
+echo "SECURE=${SECURE}"
+echo "EFI_DRIVE=${EFI_DRIVE}"
+echo "EFI_PART_NUM=${EFI_PART_NUM}"
 echo "KERNEL=${KERNEL}"
 echo "MBR_BOOT_DEVICE=${MBR_BOOT_DEVICE}"
 echo "EFI_BOOT_PARTITION=${EFI_BOOT_PARTITION}"
 echo "MICROCODE=${MICROCODE}"
+echo "LUKS_ROOT=${LUKS_ROOT}"
 echo "USER=${USER}"
 echo "HOSTNAME=${HOSTNAME}"
 echo "WIRELESS=${WIRELESS}"
@@ -134,6 +144,12 @@ fi
 echo "install bootloader"
 echo "pacman -S --noconfirm grub os-prober"
 pacman -S --noconfirm grub os-prober
+
+if [ $LUKS_ROOT != "NO" ]
+then
+    echo "sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\\\"cryptdevice=/dev/disk/by-uuid/${LUKS_ROOT}:root\\\" /etc/default/grub"
+	sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=/dev/disk/by-uuid/${LUKS_ROOT}:root\" /etc/default/grub
+fi
 
 if [ $EFI == "YES" ]
 then

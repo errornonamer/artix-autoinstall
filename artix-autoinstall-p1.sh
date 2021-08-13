@@ -8,7 +8,7 @@ SWAP="none"
 KERNEL="linux"
 
 # drive options
-ROOT_IS_LUKS="NO"
+LUKS_ROOT="NO"
 DRIVE_IS_NVME="NO"
 
 
@@ -48,7 +48,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --luks-root)
-            #ROOT_IS_LUKS="$2"
+            LUKS_ROOT="$2"
             shift
             shift
             ;;
@@ -70,7 +70,7 @@ echo "BOOT=${BOOT}"
 echo "HOME=${HOME}"
 echo "SWAP=${SWAP}"
 echo "KERNEL=${KERNEL}"
-echo "ROOT_IS_LUKS=${ROOT_IS_LUKS}"
+echo "LUKS_ROOT=${LUKS_ROOT}"
 echo "DRIVE_IS_NVME=${DRIVE_IS_NVME}"
 read -n1 -p "Press any key to continue."
 
@@ -117,13 +117,16 @@ fstabgen -L -p ${ROOT} > ${ROOT}/etc/fstab
 # {2} = drivepath
 # {1} = label
 
-#if [ $ROOT_IS_LUKS = "YES" ] then
-#fi
-
 if [ $DRIVE_IS_NVME = "YES" ]
 then
     echo "sed -i \"s/MODULES=()/MODULES=(nvme)/g\" ${ROOT}/etc/mkinitcpio.conf"
     sed -i "s/MODULES=()/MODULES=(nvme)/g" ${ROOT}/etc/mkinitcpio.conf
+fi
+
+if [ $LUKS_ROOT != "NO" ]
+then
+    echo "sed -i \"s/block filesystems/block encrypt filesystems/g\" ${ROOT}/etc/mkinitcpio.conf"
+	sed -i "s/block filesystems/block encrypt filesystems/g" ${ROOT}/etc/mkinitcpio.conf
 fi
 
 echo "base system installation complete."
