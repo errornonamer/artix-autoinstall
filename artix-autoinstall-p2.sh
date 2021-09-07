@@ -171,44 +171,74 @@ then
     echo "grub-mkconfig -o ${EFI_BOOT_PARTITION}/grub/grub.cfg"
     grub-mkconfig -o ${EFI_BOOT_PARTITION}/grub/grub.cfg
 
-    if [ $SECURE == "YES" ]
+    if [ $SECURE != "NO" ]
     then
-        echo "build standalone grub image for secure boot"
-        echo "echo 'configfile \${cmdpath}/grub.cfg' > /tmp/grub.cfg"
-        echo 'configfile ${cmdpath}/grub.cfg' > /tmp/grub.cfg
+        case $SECRUE in
+            preloader)
+                echo "build standalone grub image for secure boot"
+                echo "echo 'configfile \${cmdpath}/grub.cfg' > /tmp/grub.cfg"
+                echo 'configfile ${cmdpath}/grub.cfg' > /tmp/grub.cfg
 
-        echo "grub-mkstandalone -O x86_64-efi --modules=\"part_gpt part_msdos tpm\" --disable-shim-lock \
-                                              --locales=\"en@quot\" -o \"${EFI_BOOT_PARTITION}/EFI/grub/loader.efi\" \"boot/grub/grub.cfg=/tmp/grub.cfg\" -v"
-        grub-mkstandalone -O x86_64-efi --modules="part_gpt part_msdos tpm" --disable-shim-lock \
-                                        --locales="en@quot" -o "${EFI_BOOT_PARTITION}/EFI/grub/loader.efi" "boot/grub/grub.cfg=/tmp/grub.cfg" -v
+                echo "grub-mkstandalone -O x86_64-efi --modules=\"part_gpt part_msdos tpm\" --disable-shim-lock \
+                                                      --locales=\"en@quot\" -o \"${EFI_BOOT_PARTITION}/EFI/grub/loader.efi\" \"boot/grub/grub.cfg=/tmp/grub.cfg\" -v"
+                grub-mkstandalone -O x86_64-efi --modules="part_gpt part_msdos tpm" --disable-shim-lock \
+                                                --locales="en@quot" -o "${EFI_BOOT_PARTITION}/EFI/grub/loader.efi" "boot/grub/grub.cfg=/tmp/grub.cfg" -v
 
-        echo "cp ${EFI_BOOT_PARTITION}/grub/grub.cfg ${EFI_BOOT_PARTITION}/EFI/grub/grub.cfg"
-        cp ${EFI_BOOT_PARTITION}/grub/grub.cfg ${EFI_BOOT_PARTITION}/EFI/grub/grub.cfg
+                echo "cp ${EFI_BOOT_PARTITION}/grub/grub.cfg ${EFI_BOOT_PARTITION}/EFI/grub/grub.cfg"
+                cp ${EFI_BOOT_PARTITION}/grub/grub.cfg ${EFI_BOOT_PARTITION}/EFI/grub/grub.cfg
 
-        echo "install and setup preloader"
-        echo "pacman -S --noconfirm git"
-        pacman -S --noconfirm git
+                echo "install and setup preloader"
+                echo "pacman -S --noconfirm git"
+                pacman -S --noconfirm git
 
-        echo "cd /tmp"
-        cd /tmp
+                echo "cd /tmp"
+                cd /tmp
 
-        echo "git clone https://aur.archlinux.org/preloader-signed.git"
-        git clone https://aur.archlinux.org/preloader-signed.git
+                echo "git clone https://aur.archlinux.org/preloader-signed.git"
+                git clone https://aur.archlinux.org/preloader-signed.git
 
-        echo "cd preloader-signed"
-        cd predloader-signed
+                echo "cd preloader-signed"
+                cd predloader-signed
 
-        echo "makepkg -sri"
-        makepkg -sri
+                echo "makepkg -sri"
+                makepkg -sri
 
-        echo "cp /usr/share/preloader-signed/{PreLoader,HashTool}.efi ${EFI_BOOT_PARTITION}/EFI/grub"
-        cp /usr/share/preloader-signed/{PreLoader,HashTool}.efi ${EFI_BOOT_PARTITION}/EFI/grub
+                echo "cp /usr/share/preloader-signed/{PreLoader,HashTool}.efi ${EFI_BOOT_PARTITION}/EFI/grub"
+                cp /usr/share/preloader-signed/{PreLoader,HashTool}.efi ${EFI_BOOT_PARTITION}/EFI/grub
 
-        echo "create NVRAM entry for preloader and hashtool"
-        echo "efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label \"PreLoader\" --loader /EFI/grub/PreLoader.efi"
-        efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label "PreLoader" --loader /EFI/grub/PreLoader.efi
-        echo "efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label \"HashTool\" --loader /EFI/grub/HashTool.efi"
-        efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label "HashTool" --loader /EFI/grub/HashTool.efi
+                echo "create NVRAM entry for preloader and hashtool"
+                echo "efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label \"PreLoader\" --loader /EFI/grub/PreLoader.efi"
+                efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label "PreLoader" --loader /EFI/grub/PreLoader.efi
+                echo "efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label \"HashTool\" --loader /EFI/grub/HashTool.efi"
+                efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label "HashTool" --loader /EFI/grub/HashTool.efi
+                ;;
+            shim)
+                echo "install and setup shim"
+                echo "pacman -S --noconfirm git"
+                pacman -S --noconfirm git
+
+                echo "cd /tmp"
+                cd /tmp
+
+                echo "git clone https://aur.archlinux.org/shim-signed.git"
+                git clone https://aur.archlinux.org/shim-signed.git
+
+                echo "cd shim-signed"
+                cd shim-signed
+
+                echo "makepkg -sri"
+                makepkg -sri
+
+                echo "cp /usr/share/shim-signed/{shimx64,mmx64}.efi ${EFI_BOOT_PARTITION}/EFI/BOOT"
+                cp /usr/share/shim-signed/{shimx64,mmx64}.efi ${EFI_BOOT_PARTITION}/EFI/BOOT
+
+                echo "create NVRAM entry for shim"
+                echo "efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label \"shim\" --loader /EFI/BOOT/shimx64.efi"
+                efibootmgr --verbose --disk ${EFI_DRIVE} --part ${EFI_PART_NUM} --create --label "shim" --loader /EFI/BOOT/shimx64.efi
+                ;;
+            shim-key)
+                ;;
+        esac
     fi
 else
     echo "grub-install --recheck ${MBR_BOOT_DEVICE}"
