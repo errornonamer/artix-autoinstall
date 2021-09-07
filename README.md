@@ -45,6 +45,17 @@ artix-autoinstall-p2.sh
 
 `artix-autoinstall.sh` accepts all arguments listed above.
 
+## installed packages
+ * base, base-devel, openrc, elogind-openrc, (kernel), linux-firmware - base system
+ * cryptsetup, lvm2 (with --luks) - luks support
+ * nano - text editor for locale file
+ * intel-ucode / amd-ucode - cpu microcode
+ * grub, os-prober - bootloader
+ * efibootmgr - efi boot
+ * git (with --secure) - for installing AUR package
+ * preloader-signed / shim-signed (AUR, with --secure) - secure boot
+ * wpa_supplicant, networkmanager-openrc / dhcpcd connman-openrc - network service
+
 ## todo
 
  * support other init systems
